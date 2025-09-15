@@ -4,8 +4,6 @@ networks:
 
 volumes:
   kafka_data: {}
-  clickhouse_data: {}
-  clickhouse_logs: {}
 
 services:
   kafka:
@@ -78,8 +76,8 @@ services:
       - ./config/clickhouse-server/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ./config/clickhouse-server/users.xml:/etc/clickhouse-server/users.d/users.xml
       - ./scripts/clickhouse-server/init-otel-db.sh:/docker-entrypoint-initdb.d/init-otel-db.sh
-      - clickhouse_data:/var/lib/clickhouse
-      - clickhouse_logs:/var/log/clickhouse-server
+      - /clickhouse/lib:/var/lib/clickhouse
+      - /clickhouse/log:/var/log/clickhouse-server
     ports:
       - "8123:8123"
       - "9000:9000"
