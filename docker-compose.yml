@@ -2,8 +2,7 @@ networks:
   streamfold:
     driver: bridge
 
-volumes:
-  kafka_data: {}
+#volumes:
 
 services:
   kafka:
@@ -25,7 +24,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_NUM_PARTITIONS: 12
     volumes:
-      - kafka_data:/data
+      - /kafka/data:/data
     healthcheck:
       test: bash -c '(echo > /dev/tcp/127.0.0.1/9092) >/dev/null 2>&1'
       interval: 10s
