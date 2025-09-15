@@ -131,6 +131,7 @@ services:
       - "--kafka-exporter-brokers=${KAFKA_HOST:-kafka}:9092"
       - "--kafka-exporter-partitioner=murmur2-random"
       - "--kafka-exporter-max-message-bytes=5242880"
+      - "--kafka-exporter-compression=zstd"
 
   otel-coll-gateway:
     image: otel/opentelemetry-collector-contrib
