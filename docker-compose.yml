@@ -104,8 +104,7 @@ services:
       - streamfold
 
   clickhouse-ddl:
-    build:
-      context: ./clickhouse-ddl
+    image: streamfold/rotel-clickhouse-ddl
     networks:
       - streamfold
 
