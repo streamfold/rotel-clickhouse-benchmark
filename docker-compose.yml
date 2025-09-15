@@ -128,3 +128,4 @@ services:
     command:
       - "--exporter=kafka"
       - "--kafka-exporter-brokers=${KAFKA_HOST:-kafka}:9092"
+      - "--kafka-exporter-partitioner=murmur2-random"
