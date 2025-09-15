@@ -116,6 +116,7 @@ services:
       - "--receiver=kafka"
       - "--kafka-receiver-brokers=${KAFKA_HOST:-kafka}:9092"
       - "--kafka-receiver-traces"
+      - "--kafka-receiver-logs"
 
   rotel-edge:
     image: streamfold/rotel
