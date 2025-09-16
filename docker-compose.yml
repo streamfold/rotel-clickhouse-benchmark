@@ -101,6 +101,12 @@ services:
     networks:
       - streamfold
 
+  loadgen:
+    build:
+      context: ./loadgen
+    networks:
+      - streamfold
+
   clickhouse-ddl:
     image: streamfold/rotel-clickhouse-ddl
     networks:
