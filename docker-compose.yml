@@ -24,6 +24,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_NUM_PARTITIONS: 12
       KAFKA_MESSAGE_MAX_BYTES: 5242880
+      KAFKA_LOG_DIR: /data
     volumes:
       - /kafka/data:/data
     healthcheck:
