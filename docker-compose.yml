@@ -126,6 +126,22 @@ services:
       - "--kafka-receiver-traces"
       - "--kafka-receiver-logs"
 
+  rotel-gateway-chperf:
+    build:
+      context: ./rotel-ch-perf
+    networks:
+      - streamfold
+    environment:
+      ROTEL_MAX_CONCURRENT_ENCODERS: 16
+    command:
+      - "--exporter=clickhouse"
+      - "--clickhouse-exporter-endpoint=http://${CLICKHOUSE_HOST:-clickhouse}:8123"
+      - "--clickhouse-exporter-enable-json"
+      - "--receiver=kafka"
+      - "--kafka-receiver-brokers=${KAFKA_HOST:-kafka}:9092"
+      - "--kafka-receiver-traces"
+      - "--kafka-receiver-logs"
+
   rotel-edge:
     image: streamfold/rotel
     ports:
