@@ -9,7 +9,7 @@ RUN apt-get update && \
 # Clone the rotel repository and checkout the perf branch
 RUN git clone https://github.com/streamfold/rotel.git /rotel-src
 WORKDIR /rotel-src
-RUN git checkout ch-perf-improvements
+#RUN git checkout ch-perf-improvements
 
 # Build rotel in release mode
 RUN cargo build --release
