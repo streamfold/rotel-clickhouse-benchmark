@@ -104,8 +104,7 @@ services:
       - streamfold
 
   loadgen:
-    build:
-      context: ./loadgen
+    image: streamfold/otel-loadgen
     networks:
       - streamfold
 
