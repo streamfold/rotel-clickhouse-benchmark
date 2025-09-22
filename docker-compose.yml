@@ -129,6 +129,7 @@ services:
   rotel-gateway-chperf:
     build:
       context: ./rotel-ch-perf
+    scale: 2
     networks:
       - streamfold
     environment:
