@@ -132,7 +132,9 @@ services:
     networks:
       - streamfold
     environment:
-      ROTEL_MAX_CONCURRENT_ENCODERS: 16
+      ROTEL_MAX_CONCURRENT_ENCODERS: 12
+      ROTEL_MAX_CONCURRENT_REQUESTS: 30
+
     command:
       - "--exporter=clickhouse"
       - "--clickhouse-exporter-endpoint=http://${CLICKHOUSE_HOST:-clickhouse}:8123"
