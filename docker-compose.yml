@@ -124,12 +124,13 @@ services:
       - "--receiver=kafka"
       - "--kafka-receiver-brokers=${KAFKA_HOST:-kafka}:9092"
       - "--kafka-receiver-traces"
-      - "--kafka-receiver-logs"
 
-  rotel-gateway-chperf:
+  # Same as above, but allows for testing a custom branch
+  rotel-gateway-branch:
     build:
-      context: ./rotel-ch-perf
-    scale: 2
+      context: ./rotel-branch
+      args:
+        GIT_BRANCH: ${ROTEL_GIT_BRANCH:-main}
     networks:
       - streamfold
     environment:
@@ -143,7 +144,6 @@ services:
       - "--receiver=kafka"
       - "--kafka-receiver-brokers=${KAFKA_HOST:-kafka}:9092"
       - "--kafka-receiver-traces"
-      - "--kafka-receiver-logs"
 
   rotel-edge:
     image: streamfold/rotel

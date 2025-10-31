@@ -6,10 +6,11 @@ RUN apt-get update && \
     apt-get install -y git cmake openssl protobuf-compiler libzstd-dev libclang-dev && \
     apt-get clean
 
-# Clone the rotel repository and checkout the perf branch
+# Clone the rotel repository and checkout the custom branch
+ARG GIT_BRANCH
 RUN git clone https://github.com/streamfold/rotel.git /rotel-src
 WORKDIR /rotel-src
-RUN git checkout ch-json-binary-serialize
+RUN git checkout $GIT_BRANCH
 
 # Build rotel in release mode
 RUN cargo build --release
