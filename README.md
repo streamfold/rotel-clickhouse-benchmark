@@ -133,3 +133,20 @@ Service configurations are stored in the `config/` directory:
 - `otel-coll-gateway/`: Gateway collector configuration
 
 Initialization scripts are in `scripts/clickhouse-server/`.
+
+## Development
+
+### Rebuilding an image from source
+
+To force rebuild an image from source, use the following command. Make sure to include
+`--no-cache` to avoid reusing a cached docker layer.
+
+```bash
+docker compose build --no-cache rotel-gateway-branch
+```
+
+Then start as normal:
+
+```bash
+docker compose up -d rotel-gateway-branch
+```
