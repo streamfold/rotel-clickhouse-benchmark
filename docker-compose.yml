@@ -108,6 +108,14 @@ services:
     networks:
       - streamfold
 
+  loadgen-branch:
+    build:
+      context: ./loadgen
+      args:
+        GIT_BRANCH: ${LOADGEN_GIT_BRANCH:-main}
+    networks:
+      - streamfold
+
   clickhouse-ddl:
     image: streamfold/rotel-clickhouse-ddl
     networks:
