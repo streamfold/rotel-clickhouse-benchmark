@@ -4,14 +4,14 @@
 
 set -e
 
-mkfs.ext4 /dev/nvme0n1
+sudo mkfs.ext4 /dev/nvme0n1
 
-mkdir -p /clickhouse
+sudo mkdir -p /clickhouse
 
-mount -o noatime /dev/nvme0n1 /clickhouse
+sudo mount -o noatime /dev/nvme0n1 /clickhouse
 
-mkdir -p /clickhouse/log
-mkdir -p /clickhouse/lib
+sudo mkdir -p /clickhouse/log
+sudo mkdir -p /clickhouse/lib
 
-chmod 777 /clickhouse/log
-chmod 777 /clickhouse/lib
+sudo chmod 777 /clickhouse/log
+sudo chmod 777 /clickhouse/lib
