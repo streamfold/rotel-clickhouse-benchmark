@@ -1,6 +1,7 @@
 services:
   otel-coll-gateway:
     image: otel/opentelemetry-collector-contrib
+    scale: 2
     environment:
       KAFKA_HOST: "${KAFKA_HOST:-localhost}"
       CLICKHOUSE_HOST: "${CLICKHOUSE_HOST:-localhost}"
@@ -10,14 +11,6 @@ services:
     command:
       - "--config=/etc/otelcol-contrib/config.yaml"
       - "--feature-gates=clickhouse.json,receiver.kafkareceiver.UseFranzGo"
-    ports:
-      - 1888:1888 # pprof extension
-      - 8888:8888 # Prometheus metrics exposed by the collector
-      - 8889:8889 # Prometheus exporter metrics
-      - 13133:13133 # health_check extension
-      - 4317:4317 # OTLP gRPC receiver
-      - 4318:4318 # OTLP http receiver
-      - 55679:55679 # zpages extension
     networks:
       - streamfold
 
