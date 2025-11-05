@@ -24,7 +24,7 @@ exporters:
     traces:
       topic: otlp_traces_coll
     metrics:
-      topic: otlp_spans_coll
+      topic: otlp_metrics_coll
     producer:
       max_message_bytes: 5242880
       compression: zstd
