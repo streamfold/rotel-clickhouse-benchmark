@@ -5,6 +5,6 @@
 
 set -e
 
-mkdir -p /kafka
+sudo mkdir -p /kafka
 
-mount -o noatime /dev/sdf /kafka
+sudo mount -o noatime /dev/sdf /kafka
