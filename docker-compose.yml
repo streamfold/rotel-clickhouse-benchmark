@@ -1,8 +1,10 @@
+include:
+  - docker-compose-otelcoll.yml
+  - docker-compose-rotel.yml
+
 networks:
   streamfold:
     driver: bridge
-
-#volumes:
 
 services:
   kafka:
@@ -36,26 +38,6 @@ services:
     #   - "kafka-1.kafka-svc.kafka.svc.cluster.local:${KAFKA_HOST_IP:-127.0.0.1}"
     networks:
       - streamfold
-
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib
-    volumes:
-      - ./config/otel-collector/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
-    command:
-      - "--config=/etc/otelcol-contrib/config.yaml"
-    #      - "--feature-gates=clickhouse.json"
-    ports:
-      - 1888:1888 # pprof extension
-      - 8888:8888 # Prometheus metrics exposed by the collector
-      - 8889:8889 # Prometheus exporter metrics
-      - 13133:13133 # health_check extension
-      - 4317:4317 # OTLP gRPC receiver
-      - 4318:4318 # OTLP http receiver
-      - 55679:55679 # zpages extension
-    networks:
-      - streamfold
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   hyper-dx:
     image: docker.hyperdx.io/hyperdx/hyperdx-local
@@ -118,96 +100,5 @@ services:
 
   clickhouse-ddl:
     image: streamfold/rotel-clickhouse-ddl
-    networks:
-      - streamfold
-
-  rotel-gateway:
-    image: streamfold/rotel
-    networks:
-      - streamfold
-    scale: 2
-    environment:
-      ROTEL_MAX_CONCURRENT_ENCODERS: 12
-      ROTEL_MAX_CONCURRENT_REQUESTS: 30
-    command:
-      - "--exporter=clickhouse"
-      - "--clickhouse-exporter-endpoint=http://${CLICKHOUSE_HOST:-clickhouse}:8123"
-      - "--clickhouse-exporter-enable-json"
-      - "--clickhouse-exporter-database=${CLICKHOUSE_DATABASE:-otel}"
-      - "--receiver=kafka"
-      - "--kafka-receiver-brokers=${KAFKA_HOST:-kafka}:9092"
-      - "--kafka-receiver-traces"
-
-  # Same as above, but allows for testing a custom branch
-  rotel-gateway-branch:
-    build:
-      context: ./rotel-branch
-      args:
-        GIT_BRANCH: ${ROTEL_GIT_BRANCH:-main}
-    networks:
-      - streamfold
-    environment:
-      ROTEL_MAX_CONCURRENT_ENCODERS: 12
-      ROTEL_MAX_CONCURRENT_REQUESTS: 30
-    command:
-      - "--exporter=clickhouse"
-      - "--clickhouse-exporter-endpoint=http://${CLICKHOUSE_HOST:-clickhouse}:8123"
-      - "--clickhouse-exporter-enable-json"
-      - "--clickhouse-exporter-database=${CLICKHOUSE_DATABASE:-otel}"
-      - "--receiver=kafka"
-      - "--kafka-receiver-brokers=${KAFKA_HOST:-kafka}:9092"
-      - "--kafka-receiver-traces"
-
-  rotel-edge:
-    image: streamfold/rotel
-    ports:
-      - 4317:4317 # OTLP gRPC receiver
-      - 4318:4318 # OTLP http receiver
-    networks:
-      - streamfold
-    command:
-      - "--exporter=kafka"
-      - "--kafka-exporter-brokers=${KAFKA_HOST:-kafka}:9092"
-      - "--kafka-exporter-max-message-bytes=5242880"
-      - "--kafka-exporter-compression=zstd"
-
-  otel-coll-gateway:
-    image: otel/opentelemetry-collector-contrib
-    environment:
-      KAFKA_HOST: "${KAFKA_HOST:-localhost}"
-      CLICKHOUSE_HOST: "${CLICKHOUSE_HOST:-localhost}"
-    volumes:
-      - ./config/otel-coll-gateway/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
-    command:
-      - "--config=/etc/otelcol-contrib/config.yaml"
-      - "--feature-gates=clickhouse.json,receiver.kafkareceiver.UseFranzGo"
-    ports:
-      - 1888:1888 # pprof extension
-      - 8888:8888 # Prometheus metrics exposed by the collector
-      - 8889:8889 # Prometheus exporter metrics
-      - 13133:13133 # health_check extension
-      - 4317:4317 # OTLP gRPC receiver
-      - 4318:4318 # OTLP http receiver
-      - 55679:55679 # zpages extension
-    networks:
-      - streamfold
-
-  otel-coll-edge:
-    image: otel/opentelemetry-collector-contrib
-    environment:
-      KAFKA_HOST: "${KAFKA_HOST:-localhost}"
-    volumes:
-      - ./config/otel-coll-edge/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
-    command:
-      - "--config=/etc/otelcol-contrib/config.yaml"
-      - "--feature-gates=clickhouse.json"
-    ports:
-      - 1888:1888 # pprof extension
-      - 8888:8888 # Prometheus metrics exposed by the collector
-      - 8889:8889 # Prometheus exporter metrics
-      - 13133:13133 # health_check extension
-      - 4317:4317 # OTLP gRPC receiver
-      - 4318:4318 # OTLP http receiver
-      - 55679:55679 # zpages extension
     networks:
       - streamfold

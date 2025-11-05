@@ -1,0 +1,51 @@
+services:
+  rotel-gateway:
+    image: streamfold/rotel
+    networks:
+      - streamfold
+    scale: 2
+    environment:
+      ROTEL_MAX_CONCURRENT_ENCODERS: 12
+      ROTEL_MAX_CONCURRENT_REQUESTS: 30
+    command:
+      - "--exporter=clickhouse"
+      - "--clickhouse-exporter-endpoint=http://${CLICKHOUSE_HOST:-clickhouse}:8123"
+      - "--clickhouse-exporter-enable-json"
+      - "--clickhouse-exporter-database=${CLICKHOUSE_DATABASE:-otel}"
+      - "--receiver=kafka"
+      - "--kafka-receiver-brokers=${KAFKA_HOST:-kafka}:9092"
+      - "--kafka-receiver-traces"
+
+  # Same as above, but allows for testing a custom branch
+  rotel-gateway-branch:
+    build:
+      context: ./rotel-branch
+      args:
+        GIT_BRANCH: ${ROTEL_GIT_BRANCH:-main}
+    networks:
+      - streamfold
+    environment:
+      ROTEL_MAX_CONCURRENT_ENCODERS: 12
+      ROTEL_MAX_CONCURRENT_REQUESTS: 30
+    command:
+      - "--exporter=clickhouse"
+      - "--clickhouse-exporter-endpoint=http://${CLICKHOUSE_HOST:-clickhouse}:8123"
+      - "--clickhouse-exporter-enable-json"
+      - "--clickhouse-exporter-database=${CLICKHOUSE_DATABASE:-otel}"
+      - "--receiver=kafka"
+      - "--kafka-receiver-brokers=${KAFKA_HOST:-kafka}:9092"
+      - "--kafka-receiver-traces"
+
+  rotel-edge:
+    image: streamfold/rotel
+    ports:
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+    networks:
+      - streamfold
+    command:
+      - "--exporter=kafka"
+      - "--kafka-exporter-brokers=${KAFKA_HOST:-kafka}:9092"
+      - "--kafka-exporter-max-message-bytes=5242880"
+      - "--kafka-exporter-compression=zstd"
+
