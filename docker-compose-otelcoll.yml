@@ -4,6 +4,7 @@ services:
     environment:
       KAFKA_HOST: "${KAFKA_HOST:-localhost}"
       CLICKHOUSE_HOST: "${CLICKHOUSE_HOST:-localhost}"
+      CLICKHOUSE_DATABASE: "${CLICKHOUSE_DATABASE:-otel}"
     volumes:
       - ./config/otel-coll-gateway/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
     command:
