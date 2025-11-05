@@ -20,6 +20,6 @@ sudo chmod +r out.perf
 # fold symbols
 $HOME/flamegraph/stackcollapse-perf.pl out.perf > out.folded
 
-$HOME/flamegraph/flamegraph.pl out.folded > flamegraph.svg
+$HOME/flamegraph/flamegraph.pl --width 1800 --minwidth "0.1%" out.folded > flamegraph.svg
 
 echo "flamegraph in flamegraph.svg"
