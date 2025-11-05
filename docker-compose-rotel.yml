@@ -25,8 +25,8 @@ services:
     networks:
       - streamfold
     environment:
-      ROTEL_MAX_CONCURRENT_ENCODERS: 12
-      ROTEL_MAX_CONCURRENT_REQUESTS: 30
+      ROTEL_MAX_CONCURRENT_ENCODERS: 20
+      ROTEL_MAX_CONCURRENT_REQUESTS: 40
     command:
       - "--exporter=clickhouse"
       - "--clickhouse-exporter-endpoint=http://${CLICKHOUSE_HOST:-clickhouse}:8123"
@@ -48,4 +48,3 @@ services:
       - "--kafka-exporter-brokers=${KAFKA_HOST:-kafka}:9092"
       - "--kafka-exporter-max-message-bytes=5242880"
       - "--kafka-exporter-compression=zstd"
-
