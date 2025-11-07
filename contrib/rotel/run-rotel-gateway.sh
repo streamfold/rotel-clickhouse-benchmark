@@ -9,7 +9,7 @@ fi
 export ROTEL_MAX_CONCURRENT_ENCODERS=20
 export ROTEL_MAX_CONCURRENT_REQUESTS=40
 
-exec $ROTEL_BIN \
+exec $ROTEL_BIN start \
       --exporter clickhouse \
       --clickhouse-exporter-endpoint "http://${CLICKHOUSE_HOST:-clickhouse}:8123" \
       --clickhouse-exporter-enable-json \
