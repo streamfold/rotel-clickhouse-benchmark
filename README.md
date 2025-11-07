@@ -159,8 +159,8 @@ docker compose run --rm -ti loadgen gen --otlp-endpoint ${ROTEL_HOST_LARGE}:4317
 
 ### Environment Variables
 
-- `CLICKHOUSE_DATABASE`: `otenull` or `otel` (default)
-- `CLICKHOUSE_PASSWORD`: ClickHouse password (optional)
+- `CLICKHOUSE_HOST`: (gateway collector) Set to IP of clickhouse host you're using, see `~/.bashrc` for preset options.
+- `CLICKHOUSE_DATABASE`: (gateway collector) `otenull` or `otel` (default)
 
 ### Monitoring
 
