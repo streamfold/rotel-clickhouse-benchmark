@@ -7,7 +7,7 @@ A comprehensive benchmarking environment for testing OpenTelemetry data ingestio
 This repository provides a complete observability pipeline with multiple data processing paths for performance comparison:
 
 ```
-[Data Generators] → [Edge Processors] → [Kafka] → [Gateway Processors] → [ClickHouse] → [HyperDX UI]
+[Load Generator] → [Edge Collector] → [Kafka] → [Gateway Collector] → [ClickHouse] (→ [HyperDX UI])
 ```
 
 ## Services
@@ -82,47 +82,90 @@ This repository provides a complete observability pipeline with multiple data pr
 
 ## Usage
 
-### Quick Start
+This assumes an AWS environment.
 
-1. Start the complete environment:
+### Setup after starting instances from stopped state
+
+#### ClickHouse
+
+If using instance storage, after the first start from stopped state you must reintialize the data
+drive and set sysctl's with:
+
 ```bash
-docker-compose up -d
+./contrib/clickhouse/mount-clickhouse.sh
+
+./contrib/clickhouse/config-sys.sh
 ```
 
-2. Access HyperDX UI at http://localhost:8080
-
-3. Generate test data using telemetrygen:
+To start Clickhouse:
 ```bash
-docker-compose exec telemetrygen ./telemetrygen traces --otlp-endpoint http://rotel-edge:4317
+docker compose up -d clickhouse
 ```
 
-### Performance Testing Scenarios
+Once started, load the default schemas:
+```bash
+./contrib/clickhouse/load-ddl.sh
+```
 
-#### Scenario 1: Rotel Pipeline
-- Data flow: `telemetrygen` → `rotel-edge` → `kafka` → `rotel-gateway` → `clickhouse`
-- Start: `rotel-edge`, `rotel-gateway`, `kafka`, `clickhouse`
+#### Kafka
 
-#### Scenario 2: OpenTelemetry Collector Pipeline  
-- Data flow: `telemetrygen` → `otel-coll-edge` → `kafka` → `otel-coll-gateway` → `clickhouse`
-- Start: `otel-coll-edge`, `otel-coll-gateway`, `kafka`, `clickhouse`
+To remount the EBS drive after a stopped instance state, run:
 
-#### Scenario 3: Direct Processing
-- Data flow: `telemetrygen` → `otel-collector` → `clickhouse`
-- Start: `otel-collector`, `clickhouse`
+```bash
+./contrib/kafka/mount-kafka.sh
+```
+
+To start Kafka:
+```bash
+docker compose up -d kafka
+```
+
+To monitor consumer groups:
+```bash
+./contrib/kafka/run-kafkatop.sh
+```
+
+### Running the pipeline
+
+#### Gateway collector
+
+Rotel:
+```bash
+CLICKHOUSE_DATABASE=otelnull docker compose up rotel-gateway
+```
+
+Or from a particular branch version, make sure to build it first:
+```bash
+ROTEL_GIT_BRANCH=<branch or sha> docker compose build --no-cache rotel-gateway-branch
+
+ROTEL_GIT_BRANCH=<branch or sha> CLICKHOUSE_DATABASE=otelnull docker compose up rotel-gateway-branch
+```
+
+#### Edge collector
+
+Rotel:
+```bash
+docker compose up rotel-edge
+```
+
+#### Load Generator
+
+This will generate 1M trace spans / second, increase worker count by 10 for each additional 100k:
+
+```bash
+docker compose run --rm -ti loadgen gen --otlp-endpoint ${ROTEL_HOST_LARGE}:4317 --otlp-resources-per-batch 5 traces --workers 100
+```
+
 
 ### Environment Variables
 
-- `KAFKA_HOST_IP`: External IP for Kafka (default: kafka container)
+- `CLICKHOUSE_DATABASE`: `otenull` or `otel` (default)
 - `CLICKHOUSE_PASSWORD`: ClickHouse password (optional)
-- `CHVER`: ClickHouse server version (default: latest)
-- `CHKVER`: ClickHouse keeper version (default: latest-alpine)
 
 ### Monitoring
 
 - **Kafka**: Health check on port 9092
 - **ClickHouse**: HTTP interface on port 8123
-- **Prometheus metrics**: Available on port 8888 for all OTel collectors
-- **Health checks**: Port 13133 for OTel collectors
 
 ## Configuration
 
