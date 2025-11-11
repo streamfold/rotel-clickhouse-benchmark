@@ -3,7 +3,7 @@
 
 set -e
 
-sudo mkir -p /kafka
+sudo mkdir -p /kafka
 
 sudo mkfs.ext4 /dev/nvme0n1
 
