@@ -24,10 +24,13 @@ services:
         GIT_BRANCH: ${ROTEL_GIT_BRANCH:-main}
     networks:
       - streamfold
+    ports:
+      - 9090:9090 # prom
     environment:
       ROTEL_MAX_CONCURRENT_ENCODERS: 20
       ROTEL_MAX_CONCURRENT_REQUESTS: 40
     command:
+      - "--prometheus-endpoint=0.0.0.0:9090"
       - "--exporter=clickhouse"
       - "--clickhouse-exporter-endpoint=http://${CLICKHOUSE_HOST:-clickhouse}:8123"
       - "--clickhouse-exporter-enable-json"
@@ -57,9 +60,11 @@ services:
     ports:
       - 4317:4317 # OTLP gRPC receiver
       - 4318:4318 # OTLP http receiver
+      - 9090:9090 # prom
     networks:
       - streamfold
     command:
+      - "--prometheus-endpoint=0.0.0.0:9090"
       - "--exporter=kafka"
       - "--kafka-exporter-brokers=${KAFKA_HOST:-kafka}:9092"
       - "--kafka-exporter-max-message-bytes=5242880"
