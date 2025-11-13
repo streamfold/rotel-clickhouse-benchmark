@@ -40,11 +40,12 @@ services:
       - streamfold
 
   hyper-dx:
-    image: docker.hyperdx.io/hyperdx/hyperdx-local
+    image: docker.hyperdx.io/hyperdx/hyperdx-local:2-beta
     environment:
       CLICKHOUSE_ENDPOINT: "http://clickhouse:8123"
       CLICKHOUSE_USER: "default"
       CLICKHOUSE_PASSWORD: "${CLICKHOUSE_PASSWORD:-}"
+      BETA_CH_OTEL_JSON_SCHEMA_ENABLED: "true"
     ports:
       - 8080:8080
     networks:
