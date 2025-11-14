@@ -5,8 +5,8 @@ services:
       - streamfold
     scale: 2
     environment:
-      ROTEL_MAX_CONCURRENT_ENCODERS: 12
-      ROTEL_MAX_CONCURRENT_REQUESTS: 30
+      ROTEL_MAX_CONCURRENT_ENCODERS: 16
+      ROTEL_MAX_CONCURRENT_REQUESTS: 50
     command:
       - "--exporter=clickhouse"
       - "--clickhouse-exporter-endpoint=http://${CLICKHOUSE_HOST:-clickhouse}:8123"
@@ -22,13 +22,14 @@ services:
       context: ./rotel-branch
       args:
         GIT_BRANCH: ${ROTEL_GIT_BRANCH:-main}
+        FEATURES: ${FEATURES:-"--features prometheus"}
     networks:
       - streamfold
     ports:
       - 9090:9090 # prom
     environment:
-      ROTEL_MAX_CONCURRENT_ENCODERS: 20
-      ROTEL_MAX_CONCURRENT_REQUESTS: 40
+      ROTEL_MAX_CONCURRENT_ENCODERS: 16
+      ROTEL_MAX_CONCURRENT_REQUESTS: 80
     command:
       - "--prometheus-endpoint=0.0.0.0:9090"
       - "--exporter=clickhouse"
