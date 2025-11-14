@@ -13,8 +13,7 @@ WORKDIR /rotel-src
 RUN git checkout $GIT_BRANCH
 
 # Build rotel in release mode
-ARG FEATURES
-RUN cargo build $FEATURES --release
+RUN cargo build --features prometheus --release
 
 # Runtime stage
 FROM ubuntu:24.04
