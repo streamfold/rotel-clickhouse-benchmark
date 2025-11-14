@@ -69,3 +69,21 @@ services:
       - "--kafka-exporter-brokers=${KAFKA_HOST:-kafka}:9092"
       - "--kafka-exporter-max-message-bytes=5242880"
       - "--kafka-exporter-compression=zstd"
+
+  rotel-edge-branch2:
+    build:
+      context: ./rotel-branch
+      args:
+        GIT_BRANCH: ${ROTEL_GIT_BRANCH:-main}
+    ports:
+      - 5317:4317 # OTLP gRPC receiver
+      - 5318:4318 # OTLP http receiver
+      - 9091:9090 # prom
+    networks:
+      - streamfold
+    command:
+      - "--prometheus-endpoint=0.0.0.0:9090"
+      - "--exporter=kafka"
+      - "--kafka-exporter-brokers=${KAFKA_HOST:-kafka}:9092"
+      - "--kafka-exporter-max-message-bytes=5242880"
+      - "--kafka-exporter-compression=zstd"
