@@ -58,6 +58,7 @@ services:
       context: ./rotel-branch
       args:
         GIT_BRANCH: ${ROTEL_GIT_BRANCH:-main}
+        FEATURES: ${FEATURES:-"--features prometheus"}
     ports:
       - 4317:4317 # OTLP gRPC receiver
       - 4318:4318 # OTLP http receiver
