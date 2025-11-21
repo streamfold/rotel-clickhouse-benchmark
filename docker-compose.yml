@@ -34,8 +34,6 @@ services:
       test: bash -c '(echo > /dev/tcp/127.0.0.1/9092) >/dev/null 2>&1'
       interval: 10s
       retries: 10
-    # extra_hosts:
-    #   - "kafka-1.kafka-svc.kafka.svc.cluster.local:${KAFKA_HOST_IP:-127.0.0.1}"
     networks:
       - streamfold
 

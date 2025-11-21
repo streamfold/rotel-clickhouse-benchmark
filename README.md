@@ -1,6 +1,6 @@
 # Rotel ClickHouse Benchmark
 
-A comprehensive benchmarking environment for testing OpenTelemetry data ingestion and processing using ClickHouse as the backend storage, with both native rotel processors and OpenTelemetry Collector configurations.
+A comprehensive benchmarking environment for testing OpenTelemetry data ingestion and processing using ClickHouse as the backend storage, using both [Rotel](https://rotel.dev) and [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) configurations.
 
 ## Architecture Overview
 
@@ -50,12 +50,12 @@ This repository provides a complete observability pipeline with multiple data pr
 
 #### **otel-coll-edge**
 - **Image**: `otel/opentelemetry-collector-contrib`
-- **Purpose**: OpenTelemetry Collector configured as edge processor (alternative to rotel-edge)
+- **Purpose**: OpenTelemetry Collector configured as edge processor
 - **Ports**: 4317 (OTLP gRPC), 4318 (OTLP HTTP), 8888 (Prometheus metrics)
 
 #### **otel-coll-gateway**
 - **Image**: `otel/opentelemetry-collector-contrib`
-- **Purpose**: OpenTelemetry Collector configured as gateway processor (alternative to rotel-gateway)
+- **Purpose**: OpenTelemetry Collector configured as gateway processor
 - **Ports**: 8888 (Prometheus metrics), 13133 (health check)
 
 #### **otel-collector** (Standalone)
@@ -115,12 +115,18 @@ To remount the EBS drive after a stopped instance state, run:
 ./contrib/kafka/mount-kafka.sh
 ```
 
+For instance store:
+
+```bash
+./contrib/kafka/mount-kafka-nvme.sh
+```
+
 To start Kafka:
 ```bash
 docker compose up -d kafka
 ```
 
-To monitor consumer groups:
+To monitor consumer groups (they must exist first):
 ```bash
 ./contrib/kafka/run-kafkatop.sh
 ```
@@ -155,7 +161,6 @@ This will generate 1M trace spans / second, increase worker count by 10 for each
 ```bash
 docker compose run --rm -ti loadgen gen --otlp-endpoint ${ROTEL_HOST_LARGE}:4317 --otlp-resources-per-batch 5 traces --workers 100
 ```
-
 
 ### Environment Variables
 
