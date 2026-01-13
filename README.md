@@ -190,11 +190,11 @@ To force rebuild an image from source, use the following command. Make sure to i
 `--no-cache` to avoid reusing a cached docker layer.
 
 ```bash
-docker compose build --no-cache rotel-gateway-branch
+ROTEL_GIT_BRANCH=<branch or sha> docker compose build --no-cache rotel-gateway-branch
 ```
 
 Then start as normal:
 
 ```bash
-docker compose up -d rotel-gateway-branch
+ROTEL_GIT_BRANCH=<branch or sha> docker compose up -d rotel-gateway-branch
 ```
